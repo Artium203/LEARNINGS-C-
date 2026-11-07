@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My XO</title>
+</head>
+<body>
+<style>
+    .place {
+        background-color: gray;
+        padding: 32px 32px;
+        border: none;
+        color: black;
+        cursor: pointer;
+    }
+    .place:hover{
+        background-color: lightgray;
+    }
+    #reset{
+        border-color: blue;
+    }
+</style>
+
+<script>
+    let board = ["", "", "", "", "", "", "", "", ""];
+    let currentPlayer = "X";
+    const winningMatch = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    function tic(cell) {
+        if (board[cell] === "") {
+            board[cell] = currentPlayer;
+            document.getElementById(cell+1).value = currentPlayer;
+            if (checkWin()) {
+                document.querySelector(".display").innerText = currentPlayer + " wins!";
+                disableBoard();
+            } else if (board.every(cell => cell !== "")) {
+                document.querySelector(".display").innerText = "It's a draw!";
+            } else {
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+                document.querySelector(".display").innerText = "Current player: " + currentPlayer;
+            }
+        }
+    }
+    function checkWin() {
+        return winningMatch.some(combination => {
+            return combination.every(index => {
+                return board[index] === currentPlayer;
+            });
+        });
+    }
+    function disableBoard() {
+        document.querySelectorAll(".place").forEach(button => {
+            button.disabled = true;
+        });
+    }
+    function resetGame() {
+        board = ["", "", "", "", "", "", "", "", ""];
+        currentPlayer = "X";
+        document.querySelectorAll(".place").forEach(button => {
+            button.value = "";
+            button.disabled = false;
+        });
+        document.querySelector(".display").innerText = "Ready";
+    }
+</script>
+    <table>
+<tr>
+    <td>
+        <input type="button" class="place" id="1" onclick="tic(0)">
+        <input type="button" class="place" id="2" onclick="tic(1)">
+        <input type="button" class="place" id="3" onclick="tic(2)">
+    </td>
+</tr>
+    <tr>
+        <td>
+            <input type="button" class="place" id="4" onclick="tic(3)">
+            <input type="button" class="place" id="5" onclick="tic(4)">
+            <input type="button" class="place" id="6" onclick="tic(5)">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="button" class="place" id="7" onclick="tic(6)">
+            <input type="button" class="place" id="8" onclick="tic(7)">
+            <input type="button" class="place" id="9" onclick="tic(8)">
+        </td>
+    </tr>
+    </table>
+<h1 class="display">Ready</h1>
+<input type="reset" value="Reset Game" onclick="resetGame()" id="reset">
+
+</body>
+</html>
